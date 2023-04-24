@@ -12,10 +12,12 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { contactSlice } from './contactSlice';
 import { filterSlice } from './filterSlice';
+import { modalSlice } from './modalSlice';
 
 const rootReducer = combineReducers({
   contact: contactSlice.reducer,
   filter: filterSlice.reducer,
+  modal: modalSlice.reducer,
 });
 
 const persistConfig = {

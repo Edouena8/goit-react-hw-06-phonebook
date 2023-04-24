@@ -1,5 +1,8 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { createContact} from "redux/contactSlice";
+import { toggleModal } from "redux/modalSlice";
+import { nanoid } from 'nanoid';
 import { 
     FormWrap, 
     LabelWrap, 
@@ -8,9 +11,33 @@ import {
     AddBtn 
 } from "./ContactForm.styled";
 
-export default function ContactForm({onSubmit}) {
+export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  
+  const contacts = useSelector(state => state.contact);
+  const modal = useSelector(state => state.modal)
+  const dispatch = useDispatch();
+
+  const duplicateContact = name => {
+    return contacts.find(contact => 
+      contact.name === name);
+  };
+
+  const formSubmitHandler = (name, number) => {
+    if(duplicateContact(name)){
+      return alert(`${name} is already in contacts`);
+    }
+
+        const contact = {
+          id: nanoid(),
+          name,
+          number,
+        };
+
+        dispatch(createContact(contact));
+        dispatch(toggleModal(modal));
+  };
 
   const handleChange = evt => {
     const {name, value} = evt.target;
@@ -32,7 +59,7 @@ export default function ContactForm({onSubmit}) {
   const handleSubmit = evt => {
     evt.preventDefault();
 
-    onSubmit(name, number);
+    formSubmitHandler(name, number);
     setName('');
     setNumber('');
   }
@@ -68,9 +95,5 @@ export default function ContactForm({onSubmit}) {
 
       <AddBtn type="submit">Add contact</AddBtn>
     </FormWrap>
-    )
-}
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+    );
 };

@@ -1,28 +1,32 @@
 import { useEffect } from "react";
 import { createPortal  } from "react-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "redux/modalSlice";
 import { ModalBackdrop, ModalContent } from "./Modal.styled";
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default function Modal({onClose, children}) {
+export default function Modal({ children}) {
+    const dispatch = useDispatch();
+    const modal = useSelector(state => state.modal);
     
     useEffect(() => {
         const handleKeyDown = evt => {
             if(evt.code === 'Escape') {
-                onClose();
+                dispatch(toggleModal(modal));
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
-
+ 
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }
-    }, [onClose]);
+    }, [dispatch, modal]);
 
     const handleBackdropClick = evt => {
         if(evt.target === evt.currentTarget) {
-            onClose();
+            toggleModal();
         }
     }
 
