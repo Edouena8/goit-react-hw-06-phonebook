@@ -26,7 +26,7 @@ export default function Modal({ children}) {
 
     const handleBackdropClick = evt => {
         if(evt.target === evt.currentTarget) {
-            toggleModal();
+            dispatch(toggleModal(modal));
         }
     }
 
